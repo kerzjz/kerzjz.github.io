@@ -24,21 +24,21 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: StreakingMan的博客
-email: z_max_y@163.com
-author: StreakingMan
-copyright: Copyright © 2020-2021
+title: Ker ZJZ
+email: kzjz@outlook.it
+author: Ker ZJZ
+copyright: Copyright © 2025-now
 description: >- # this means to ignore newlines until "baseurl:"
-  StreakingMan（裸奔狂甩丁丁）的博客，沉淀知识，随笔总结，记录各种炫酷和花里胡哨的东西。
+  Ker ZJZ的博客
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-favicon: "/assets/favicon.ico" # the favicon for your site
+favicon: "logo.ico" # the favicon for your site
 
 # Links
 links:
-  github: "https://github.com/StreakingMan"
-  bilibili: "https://space.bilibili.com/18424564"
+  github: "https://github.com/kerzjz"
+#   bilibili: "https://space.bilibili.com/"
 
 # Yat date format
 # refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this
@@ -52,10 +52,10 @@ yat:
 # header_transparent: true
 
 # Google analytics
-google_analytics: G-3F9TE1DGZD
+# google_analytics: G-3F9TE1DGZD
 
 # 百度统计
-baidu_analytics: 26ec48f61b6316f4d277bacd3aef2106
+# baidu_analytics: 26ec48f61b6316f4d277bacd3aef2106
 
 # If you want to generate website sitemap, you can set true
 sitemap: true
@@ -119,8 +119,8 @@ header_pages:
 # Page default value
 defaults:
   home:
-    heading: "StreakingMan's Blog"
-    subheading: "种一棵树，最好的时间是十年前，其次是现在"
+    heading: "Ker ZJZ"
+    subheading: "Ker ZJZ的博客"
     banner: "Your image url"
 
 # Pagination setting
@@ -132,15 +132,15 @@ defaults:
 
 # Gitment comments
 # gitment:
-#  username: "StreakingMan"
-#  repo: "streakingman.github.io"
-#  client_id: "0f6ccb61614db36eb8e3"
-#  client_secret: "e4e8de79bceda034bb3528aa49ce5788c1dc5926"
-#  redirect_uri: "http://blog.streakingman.com/"   # If you use a custom domain name
+#  username: "kerzjz"
+#  repo: "kerzjz.github.io"
+#  client_id: ""
+#  client_secret: ""
+#  redirect_uri: "http://kerzjz.dpdns.org"   # If you use a custom domain name
 
 # Utterances comments
 utterances:
-  repo: "StreakingMan/streakingman.github.io"
+  repo: "kerzjz/kerzjz.github.io"
   issue_term: "title"
   label: "utterances comment"
   theme: "github-light"
