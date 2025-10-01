@@ -9,6 +9,27 @@
           <i class="fa fa-github" style="font-size: 24px;margin:0 8px"></i>
         </a>
       </div>
+      <button id="generateQRCode">生成二维码</button>
+    <div id="qrcode"></div>
+
+    <!-- 引入qrcode.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.min.js"></script>
+    <script>
+        document.getElementById('generateQRCode').addEventListener('click', function() {
+            // 获取当前网页的URL
+            const url = window.location.href;
+
+            // 创建二维码
+            const qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: url,
+                width: 128,
+                height: 128,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+    </script>
       <div>
         本站总访问量<span id="busuanzi_value_site_pv"></span>次，
         访客数<span id="busuanzi_value_site_uv"></span>人次，
