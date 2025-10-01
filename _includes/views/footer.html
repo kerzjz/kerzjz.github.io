@@ -13,14 +13,18 @@
     <div id="qrcode"></div>
 
     <!-- 引入qrcode.js库 -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         document.getElementById('generateQRCode').addEventListener('click', function() {
             // 获取当前网页的URL
             const url = window.location.href;
 
+            // 清空之前的二维码
+            const qrcodeContainer = document.getElementById('qrcode');
+            qrcodeContainer.innerHTML = '';
+
             // 创建二维码
-            const qrcode = new QRCode(document.getElementById('qrcode'), {
+            const qrcode = new QRCode(qrcodeContainer, {
                 text: url,
                 width: 128,
                 height: 128,
