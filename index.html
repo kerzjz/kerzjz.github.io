@@ -39,10 +39,13 @@ var $ = mdui.$;
 
 window.onload = function () {
     console.log("欢迎来到Ker ZJZ的小站");
-    // 在这里写你的代码
-    mdui.snackbar({
+    // 设置一个定时器，在10秒后执行指定的函数
+    setTimeout(function() {
+        // 在这里写你需要执行的代码
+      mdui.snackbar({
     message: '欢迎来到Ker ZJZ的小站！'
   });
+    }, 10000); // 10000毫秒 = 10秒
 };
 </script>
  
