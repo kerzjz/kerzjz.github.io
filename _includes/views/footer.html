@@ -9,9 +9,18 @@
           <i class="fa fa-github" style="font-size: 24px;margin:0 8px"></i>
         </a>
       </div>
-      <button id="generateQRCode">生成二维码</button>
+      <button class="mdui-btn mdui-btn-raised mdui-ripple" mdui-dialog="{target: '#example-1'}">分享</button>
+      <div class="mdui-dialog">
+  <div class="mdui-dialog-title">分享</div>
+  <div class="mdui-dialog-content">
     <div id="qrcode"></div>
-
+  </div>
+  <div class="mdui-dialog-actions">
+    <button id="generateQRCode" class="mdui-btn mdui-btn-raised mdui-ripple">生成二维码</button>
+    <button id="copyButton" class="mdui-btn mdui-btn-raised mdui-ripple">复制页面网址</button>
+  </div>
+</div>
+      
     <!-- 引入qrcode.js库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
@@ -34,9 +43,31 @@
             });
         });
     </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const copyButton = document.getElementById('copyButton');
+
+    copyButton.addEventListener('click', () => {
+        // 获取当前页面的URL
+        const url = window.location.href;
+
+        // 使用navigator.clipboard.writeText方法复制到剪贴板
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                // 复制成功后的操作
+                alert('页面网址已复制到剪贴板！');
+            })
+            .catch(err => {
+                // 复制失败后的操作
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制网址。');
+            });
+    });
+});
+      </script>
       <div>
-        本站总访问量<span id="busuanzi_value_site_pv"></span>次，
-        访客数<span id="busuanzi_value_site_uv"></span>人次，
+        本站总访问量<span id="busuanzi_value_site_pv" style='display:none'></span>次，
+        访客数<span id="busuanzi_value_site_uv" style='display:none'></span>人次，
         统计由<a href="//busuanzi.ibruce.info/" rel="nofollow noopener noreferrer" target="_blank">不蒜子</a>驱动。
       </div>
       <div>
