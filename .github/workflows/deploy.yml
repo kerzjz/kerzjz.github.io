@@ -1,0 +1,21 @@
+name: Build Jekyll → EdgeOne Pages
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with: { ruby-version: '3.2' }
+      - run: |
+          gem install bundler
+          bundle install
+          bundle exec jekyll build   # 生成静态文件到 _site
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: |
+          REPO_NAME=${GITHUB_REPOSITORY##*/}
+          npx @edgeone/pages-cli deploy ./_site \
+            -n "$REPO_NAME" -t ${{ secrets.EDGEONE_API_TOKEN }}
