@@ -1,7 +1,8 @@
 ---
-title: 2026新年特稿-在不确定中向前走
-date: 2025-12-30
+title: [KZ特稿] 2026新年特稿-在不确定中向前走
+date: 2025-12-31
 categories: 特稿
+author: Ker ZJZ Global
 ---
  
 （v6-终稿）
