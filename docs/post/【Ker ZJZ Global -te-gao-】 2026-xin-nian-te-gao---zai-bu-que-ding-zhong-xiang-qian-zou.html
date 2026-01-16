@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
-    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    
     <link rel="icon" href="https://kerzjz.qzz.io/logo.ico"><script>
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
@@ -26,7 +26,7 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://kerzjz.github.io/gmeek/post/%E3%80%90Ker%20ZJZ%20Global%20-te-gao-%E3%80%91%202026-xin-nian-te-gao---zai-bu-que-ding-zhong-xiang-qian-zou.html">
 <meta property="og:image" content="https://kerzjz.qzz.io/logo.ico">
-<title>【Ker ZJZ Global 特稿】 2026新年特稿-在不确定中向前走</title>
+<title>【Ker ZJZ Global 特稿】 2026新年特稿-在不确定中向前走 - Ker ZJZ</title>
 
 
 
@@ -61,6 +61,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="header">
 <h1 class="postTitle">【Ker ZJZ Global 特稿】 2026新年特稿-在不确定中向前走</h1>
 <div class="title-right">
+    <p>Ker ZJZ</p>
     <a href="https://kerzjz.github.io/gmeek" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
             <path id="pathHome" fill-rule="evenodd"></path>
@@ -144,7 +145,7 @@ AI 会学会温柔地等待，<br>
 
 </div>
     <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://kerzjz.github.io/gmeek">Ker ZJZ</a></div>
-<div id="footer2"><span id="filingNum"><a href="https://beian.miit.gov.cn/" target="_blank">萌ICP备20259426</a> • </span>
+<div id="footer2"><span id="filingNum"><a href="https://moe.icp.gov/" target="_blank">萌ICP备20259426</a> • </span>
     <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
 </div>
 
@@ -205,6 +206,7 @@ cmButton=document.getElementById("cmButton");
 function openComments(){
     cm=document.getElementById("comments");
     cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
     cmButton.innerHTML="loading";
     span=document.createElement("span");
     span.setAttribute("class","AnimatedEllipsis");
