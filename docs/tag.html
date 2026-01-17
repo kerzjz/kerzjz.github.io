@@ -76,7 +76,76 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <nav class="SideNav"></nav>
 <div class="notFind" style="display:none;font-size:24px;margin:8px;">Not Find</div>
 </div>
-    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://kerzjz.qzz.io">Ker ZJZ</a></div>
+    <div id="footer">  <link rel="stylesheet" href="https://unpkg.com/mdui@1/dist/css/mdui.min.css"/>
+  <style>
+    #currentUrl {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #666;
+      word-break: break-all;
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+  <div class="mdui-container">
+    <div class="mdui-panel" mdui-panel>
+      <div class="mdui-panel-item" id="sharePanel">
+        <div class="mdui-panel-item-header">分享</div>
+        <div class="mdui-panel-item-body">
+          <button id="copyButton" class="mdui-btn mdui-btn-raised mdui-ripple">复制页面网址</button>
+          <div id="qrcode" style="display: inline-block; margin: 20px auto;"></div>
+          <div id="currentUrl"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/mdui@1/dist/js/mdui.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyButton = document.getElementById('copyButton');
+      const panel = document.getElementById('sharePanel');
+
+      /* 复制功能 */
+      copyButton.addEventListener('click', () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url)
+          .then(() => alert('页面网址已复制到剪贴板！'))
+          .catch(err => {
+            console.error(err);
+            alert('复制失败，请手动复制网址。');
+          });
+      });
+
+      /* 面板展开后生成二维码（MDUI 提供的事件） */
+      panel.addEventListener('open.mdui.panel', () => {
+        if (!document.querySelector('#qrcode canvas')) {
+          generateQRCode();
+        }
+      });
+    });
+
+    function generateQRCode() {
+      const container = document.getElementById('qrcode');
+      const url = window.location.href;
+      container.innerHTML = '';
+      document.getElementById('currentUrl').textContent = url;
+
+      new QRCode(container, {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark: '#000',
+        colorLight: '#fff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+  </script>
+    
+<div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://kerzjz.qzz.io">Ker ZJZ</a></div>
 <div id="footer2"><span id="filingNum"><a href="https://icp.gov.moe/" target="_blank">萌ICP备20259426</a> • </span>
     <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
 </div>
