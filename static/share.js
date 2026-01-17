@@ -1,4 +1,4 @@
-/*        // 获取当前页面URL
+a/*        // 获取当前页面URL
         const currentUrl = window.location.href;
         
         // 显示当前URL
@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 });
-*/
 // 修改您的代码，监听dialog显示完成事件
 document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copyButton');
@@ -107,4 +106,43 @@ function generateQRCode() {
     } catch (error) {
         console.error('二维码生成失败:', error);
     }
-}
+}*/
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyButton = document.getElementById('copyButton');
+      const panel = document.getElementById('sharePanel');
+
+      /* 复制功能 */
+      copyButton.addEventListener('click', () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url)
+          .then(() => alert('页面网址已复制到剪贴板！'))
+          .catch(err => {
+            console.error(err);
+            alert('复制失败，请手动复制网址。');
+          });
+      });
+
+      /* 面板展开后生成二维码（MDUI 提供的事件） */
+      panel.addEventListener('open.mdui.panel', () => {
+        if (!document.querySelector('#qrcode canvas')) {
+          generateQRCode();
+        }
+      });
+    });
+
+    function generateQRCode() {
+      const container = document.getElementById('qrcode');
+      const url = window.location.href;
+      container.innerHTML = '';
+      document.getElementById('currentUrl').textContent = url;
+
+      new QRCode(container, {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark: '#000',
+        colorLight: '#fff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
