@@ -1,6 +1,6 @@
-# Ker ZJZ :link: https://kerzjz.github.io/gmeek 
-### :page_facing_up: [1](https://kerzjz.github.io/gmeek/tag.html) 
+# Ker ZJZ :link: https://kerzjz.qzz.io 
+### :page_facing_up: [1](https://kerzjz.qzz.io/tag.html) 
 ### :speech_balloon: 1 
 ### :hibiscus: 1525 
-### :alarm_clock: 2026-01-17 12:38:57 
+### :alarm_clock: 2026-01-17 12:49:18 
 ### Powered by :heart: [Gmeek](https://github.com/Meekdai/Gmeek)
