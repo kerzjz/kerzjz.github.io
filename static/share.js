@@ -1,23 +1,21 @@
-        document.getElementById('generateQRCode').addEventListener('click', function() {
-            // 获取当前网页的URL
-            const url = window.location.href;
-
-            // 清空之前的二维码
-            const qrcodeContainer = document.getElementById('qrcode');
-            qrcodeContainer.innerHTML = '';
-
-            // 创建二维码
-            const qrcode = new QRCode(qrcodeContainer, {
-                text: url,
-                width: 128,
-                height: 128,
-                colorDark: '#000000',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
+        // 获取当前页面URL
+        const currentUrl = window.location.href;
+        
+        // 显示当前URL
+        document.getElementById('currentUrl').textContent = currentUrl;
+        
+        // 生成二维码
+        new QRCode(document.getElementById("qrcode"), {
+            text: currentUrl,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copyButton');
 
     copyButton.addEventListener('click', () => {
