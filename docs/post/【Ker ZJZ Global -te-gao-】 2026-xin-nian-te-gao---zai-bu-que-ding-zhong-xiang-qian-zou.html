@@ -139,7 +139,7 @@ AI 会学会温柔地等待，<br>
 中国故事终将传向更远的远方。</p>
 <p><strong>新年快乐，明天见。</strong></p>
 </div>
-<div style="font-size:small;margin-top:8px;float:right;"><button class='mdui-btn mdui-btn-raised mdui-ripple' mdui-dialog='{target: "#share"}'>分享</button><div class='mdui-dialog' id='share' style='width: 700px; max-width: 95vw; height: 500px; max-height: 85vh;'><div class='mdui-dialog-title'>分享</div><div class='mdui-dialog-content'><div id='qrcode' style='display: inline-block;'></div></div><div class='mdui-dialog-actions'><button id='copyButton' class='mdui-btn mdui-btn-raised mdui-ripple'>复制页面网址</button></div></div></div>
+<div style="font-size:small;margin-top:8px;float:right;"><div class='mdui-container'><div class='mdui-panel' mdui-panel><div class='mdui-panel-item' id='sharePanel'><div class='mdui-panel-item-header'>分享</div><div class='mdui-panel-item-body'><button id='copyButton' class='mdui-btn mdui-btn-raised mdui-ripple'>复制页面网址</button><div id='qrcode' style='display: inline-block; margin: 20px auto;'></div><div id='currentUrl'></div></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
 <div class="comments" id="comments"></div>
