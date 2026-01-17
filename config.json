@@ -1,21 +1,11 @@
 {
-    "title":"Ker ZJZ",
-    "subTitle":"Ker ZJZ的博客",
-    "avatarUrl":"https://cdn-us.imgs.moe/2026/01/17/a88d8365565406c0202ca8bad0560bd4.png",
-    "GMEEK_VERSION":"last",
-    "email":"kzjz@outlook.it",
-    "startSite":"01/12/2026",
-    "script":"<script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="kerzjz.qzz.io/gmeek/share.js"></script>",
-    "bottomText":"<button class="mdui-btn mdui-btn-raised mdui-ripple" mdui-dialog="{target: '#share'}">分享</button>
-      <div class="mdui-dialog" id="share" style="width: 700px; max-width: 95vw; height: 500px; max-height: 85vh;">
-        <div class="mdui-dialog-title">分享</div>
-        <div class="mdui-dialog-content">
-          <div id="qrcode"></div>
-        </div>
-        <div class="mdui-dialog-actions">
-          <button id="generateQRCode" class="mdui-btn mdui-btn-raised mdui-ripple">在其他设备上继续阅读</button>
-          <button id="copyButton" class="mdui-btn mdui-btn-raised mdui-ripple">复制页面网址</button>
-        </div>
-      </div>"
-    "filingNum":"萌ICP备20259426"
+  "title": "Ker ZJZ",
+  "subTitle": "Ker ZJZ的博客",
+  "avatarUrl": "https://cdn-us.imgs.moe/2026/01/17/a88d8365565406c0202ca8bad0560bd4.png",
+  "GMEEK_VERSION": "last",
+  "email": "kzjz@outlook.it",
+  "startSite": "01/12/2026",
+  "script": "<script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'></script><script src='https://kerzjz.qzz.io/gmeek/share.js'></script>",
+  "bottomText": "<button class='mdui-btn mdui-btn-raised mdui-ripple' mdui-dialog='{target: \"#share\"}'>分享</button><div class='mdui-dialog' id='share' style='width: 700px; max-width: 95vw; height: 500px; max-height: 85vh;'><div class='mdui-dialog-title'>分享</div><div class='mdui-dialog-content'><div id='qrcode'></div></div><div class='mdui-dialog-actions'><button id='generateQRCode' class='mdui-btn mdui-btn-raised mdui-ripple'>在其他设备上继续阅读</button><button id='copyButton' class='mdui-btn mdui-btn-raised mdui-ripple'>复制页面网址</button></div></div>",
+  "filingNum": "萌ICP备20259426"
 }
