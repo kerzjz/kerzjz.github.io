@@ -1,0 +1,703 @@
+---
+import { siteConfig, footerConfig } from '../config/site';
+import { infoConfig } from '../config/info';
+import { seoConfig } from '../config/seo';
+import { ClientRouter } from 'astro:transitions';
+import NavBar from '../components/NavBar.astro';
+// import CustomCursor from '../components/CustomCursor.svelte';
+import WelcomeToast from '../components/WelcomeToast.astro';
+import { PageBanner } from '../components/PageBanner';
+import { execSync } from 'child_process';
+import LiteDetector from '../components/LiteDetector.astro';
+import '../index.css';
+// 删掉旧的DEFAULT_BG_URL常量
+const DEFAULT_BG_URL = siteConfig.defaultBgUrl;
+// 下面原有所有代码不动，直接继续使用变量 DEFAULT_BG_URL
+
+let bgCount = 6;
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  categoryName?: string | null;
+  tagName?: string | null;
+  post?: { title: string; date: string } | null;
+  contentType?: "post" | "page";
+  isTalk?: boolean;
+  postsCount?: number;
+  isAboutPage?: boolean;
+  isArticle?: boolean;
+}
+
+const {
+  title,
+  description,
+  image = seoConfig.defaultImage,
+  categoryName = null,
+  tagName = null,
+  post = null,
+  contentType = "post",
+  isTalk = false,
+  postsCount = 0,
+  isAboutPage = false,
+  isArticle = false,
+} = Astro.props;
+
+const pageTitle = title 
+  ? `${title}${seoConfig.titleTemplate}` 
+  : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
+const pageDescription = (description || seoConfig.defaultDescription).length < 10 
+  ? seoConfig.defaultDescription 
+  : (description || seoConfig.defaultDescription);
+
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 旧设备特性检测与降级跳转：必须是 <head> 里第一个执行的脚本，
+         且早于下方所有使用 const / 箭头函数的内联脚本 -->
+    <LiteDetector />
+    <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ymsvtd1bgj");
+</script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="keywords" content={seoConfig.keywords.join(", ")} />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="robots" content={seoConfig.robots} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
+    {/* Favicon - use avatar image */}
+    <link rel="icon" href={siteConfig.avatar} />
+    <link rel="apple-touch-icon" href={siteConfig.avatar} />
+
+    {/* Open Graph Tags */}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content={post ? "article" : "website"} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:url" content={canonicalURL} />
+    {post && <meta property="article:published_time" content={post.dateISO || post.date} />}
+    
+    {/* Twitter Card Tags — 增加判空防止构建崩溃 */}
+    {seoConfig.twitter && (
+    <>
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content={seoConfig.twitter.site} />
+      <meta name="twitter:creator" content={seoConfig.twitter.creator} />
+      <meta name="twitter:title" content={pageTitle} />
+      <meta name="twitter:description" content={pageDescription} />
+      <meta name="twitter:image" content={image} />
+    </>
+    )}
+
+    {/* JSON-LD Structured Data */}
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": `${siteConfig.url}/#website`,
+          "url": siteConfig.url,
+          "name": siteConfig.title,
+          "description": siteConfig.description,
+          "inLanguage": "zh-CN"
+        },
+        {
+          "@type": "Person",
+          "@id": `${siteConfig.url}/#person`,
+          "name": siteConfig.author,
+          "url": siteConfig.url,
+          "image": siteConfig.avatar,
+          "sameAs": [
+            siteConfig.socials.github
+          ]
+        },
+        ...(post ? [{
+          "@type": "Article",
+          "@id": `${canonicalURL}#article`,
+          "headline": post.title,
+          "description": pageDescription,
+          "image": image,
+          "datePublished": post.dateISO || post.date,
+          "author": {
+            "@type": "Person",
+            "name": siteConfig.author,
+            "url": siteConfig.url,
+            "image": siteConfig.avatar
+          },
+          "publisher": {
+            "@type": "Person",
+            "name": siteConfig.author,
+            "image": siteConfig.avatar
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": canonicalURL
+          }
+        }] : [])
+      ]
+    })} />
+
+    {/* Dynamic Prefetch & Preconnect — 增加可选链防报错 */}
+    {seoConfig.dnsPrefetch?.map(domain => (
+      <link rel="dns-prefetch" href={domain} />
+    ))}
+    {seoConfig.preconnect?.map(conn => (
+      <link rel="preconnect" href={conn.url} crossorigin={conn.crossOrigin === "anonymous" ? "anonymous" : undefined} />
+    ))}
+    {/* Non-blocking Google Fonts: system font first, swap in when ready (FOUT, no spinner) */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+SC:wght@300..900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+SC:wght@300..900&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+    </noscript>
+
+    {/* Umami 统计增加可选链 */}
+    {siteConfig.analytics?.umami?.map(u => (
+      <script defer src={u.src} data-website-id={u.id}></script>
+    ))}
+  <style is:global>
+    @keyframes content-in {
+      0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes content-out {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(15px); filter: blur(2px); }
+    }
+    /* Card Specific Entrance - Used for staggered listing */
+    @keyframes card-entrance {
+      0% { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.96); 
+        filter: blur(4px);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.02);
+        filter: blur(0);
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+        filter: blur(0);
+      }
+    }
+    .animate-card-entrance {
+      animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+  </style>
+  {/* Dark mode init: read persisted theme before first paint */}
+  <script is:inline>
+    (function() {
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        // localStorage may be unavailable in some contexts
+      }
+    })();
+  </script>
+  <ClientRouter />
+</head>
+  <body data-bg-count={bgCount} data-bg-url={DEFAULT_BG_URL} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
+    {/* Persistent full-page bg layer (survives View Transitions) */}
+    <div
+      id="site-bg"
+      transition:persist="site-bg"
+      class="fixed inset-0 -z-10 pointer-events-none"
+      aria-hidden="true"
+    ></div>
+    <div id="site-bg-loader" transition:persist="site-bg-loader" aria-hidden="true">
+      <div class="bg-bricks">
+        <span class="bg-brick"></span>
+        <span class="bg-brick"></span>
+        <span class="bg-brick"></span>
+      </div>
+      <span class="bg-loader-text">loading</span>
+      <div class="bg-mini-bar"><i id="site-bg-loader-bar"></i></div>
+      <span class="bg-loader-meta" id="site-bg-loader-meta" hidden>0 / 0 · 0%</span>
+    </div>
+    <!-- Tiny top bar + count only while real resources are loading -->
+    <div id="resource-progress" transition:persist="resource-progress" aria-hidden="true">
+      <i></i>
+      <span id="resource-progress-meta" hidden>0 / 0 · 0%</span>
+    </div>
+    <!-- Skip to content for keyboard users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
+      跳转到主要内容
+    </a>
+    {/* Global reading progress bar */}
+    <div class="fixed top-0 left-0 w-full h-[5px] bg-transparent z-[110] pointer-events-none">
+      <div 
+        id="scroll-bar-indicator"
+        class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
+      ></div>
+    </div>
+    {/* Page navigation loading bar */}
+    <div id="nav-loader" class="fixed top-0 left-0 w-full h-[4px] z-[111] pointer-events-none hidden">
+      <div class="h-full bg-gradient-to-r from-[#fde68a] via-[#f59e0b] to-[#fde68a] w-0 h-full transition-all duration-300"></div>
+    </div>
+    {/* Bottom page transition progress bar */}
+    <div id="bottom-loader" class="fixed bottom-0 left-0 w-full z-[111] pointer-events-none" style="transform: translateY(100%); transition: transform 0.3s ease;">
+      <div class="h-[5px] bg-[#0284c7] border-t-2 border-[#0284c7] shadow-[0px_-2px_0px_0px_#f59e0b] w-0" style="transition: width 0.3s ease-out;"></div>
+    </div>
+   <!--<CustomCursor client:load />-->
+    <WelcomeToast />                
+    <div class="flex flex-col min-h-screen">
+      <NavBar />
+      
+      {!isAboutPage ? (
+        <div 
+          class="min-h-screen dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300"
+          style={{ backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" }}
+        >
+          <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
+            <PageBanner 
+              client:load
+              pathname={Astro.url.pathname}
+              categoryName={categoryName}
+              tagName={tagName}
+              post={post}
+              postsCount={postsCount}
+              contentType={contentType}
+            />
+
+            <main
+              id="main-content"
+              class="flex-1"
+              transition:animate={{
+                forwards: {
+                  old: [{ name: 'content-out', duration: '0.2s', easing: 'ease-in' }],
+                  new: [{ name: 'content-in', duration: '0.35s', easing: 'ease-out' }]
+                },
+                backwards: {
+                  old: [{ name: 'content-out', duration: '0.2s', easing: 'ease-in' }],
+                  new: [{ name: 'content-in', duration: '0.35s', easing: 'ease-out' }]
+                }
+              }}
+            >
+              <slot />
+            </main>
+          </div>
+        </div>
+      ) : (
+        <main class="flex-1">
+          <slot />
+        </main>
+      )}
+      
+      <footer class="w-full dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
+        <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
+          <div class="font-bold">
+            <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
+            <span class="mx-1.5">|</span>
+            {infoConfig.footer.links.map((link, i) => (
+              <>
+                <a href={link.path} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined} class="hover:text-[#0ea5e9] transition-colors hover:underline">{link.name}</a>
+                {i < infoConfig.footer.links.length - 1 && <span class="mx-1">·</span>}
+              </>
+            ))}
+            {infoConfig.footer.icp && <><span class="mx-1.5">|</span><a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="hover:text-[#0ea5e9] transition-colors text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a></>}
+          </div>
+          <div>
+            <span>{footerConfig.tplText}</span><a href={footerConfig.tplUrl} class="hover:text-[#0ea5e9] underline font-bold">{footerConfig.tplDisplayName}</a>
+            {(() => {
+              try {
+                const log = execSync('git log -n 1 --pretty=format:"%h||%ci"').toString().trim();
+                const [hash, dateRaw] = log.split('||');
+                const d = dateRaw ? new Date(dateRaw) : null;
+                const formattedDate = d
+                  ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+                  : '';
+                return <>
+                  <span class="mx-1">·</span>
+                  <a href={`${footerConfig.repoUrl}/commit/${hash}`} class="hover:text-[#0ea5e9] underline font-bold">{hash}</a>
+                  {formattedDate && <><span class="mx-0.5">·</span><span>{formattedDate}</span></>}
+                </>;
+              } catch (e) {
+                console.warn('[Layout] Git info unavailable at build time');
+                return null;
+              }
+            })()}
+          </div>
+          <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+            本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+<script is:inline define:vars={{ __startTime: siteConfig.startTime.getTime() }}>
+  if (!window._uptimeStarted) {
+    window._uptimeStarted = true;
+    const start = new Date(__startTime);
+    setInterval(function() {
+      const el = document.getElementById('uptime-display');
+      if (!el) return;
+      const diff = (Date.now() - start.getTime()) / 1000;
+      const days = Math.floor(diff / 86400);
+      const hours = Math.floor((diff % 86400) / 3600);
+      const mins = Math.floor((diff % 3600) / 60);
+      const secs = Math.floor(diff % 60);
+      el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + String(secs).padStart(2,'0') + '\u79d2';
+    }, 1000);
+  }
+</script>
+<script is:inline define:vars={{ __pageTrackApi: siteConfig.analytics.pageTrackApi }}>
+  (function () {
+    var KEY = 'xuhome-bg-idx';
+
+    function applySiteBg() {
+      var el = document.getElementById('site-bg');
+      if (!el) return;
+      var bgCount = Number(document.body && document.body.dataset.bgCount) || 0;
+      if (bgCount <= 0) return;
+
+      var isMobile = window.innerWidth < 768;
+      var min = isMobile ? 4 : 1;
+      var max = isMobile ? 6 : 3;
+      var i = 0;
+      try {
+        i = parseInt(sessionStorage.getItem(KEY) || '0', 10) || 0;
+      } catch (e) {}
+      if (i < min || i > max) {
+        i = Math.floor(Math.random() * (max - min + 1)) + min;
+        try { sessionStorage.setItem(KEY, String(i)); } catch (e) {}
+      }
+
+//      var url = 'https://img.upxuu.com/images/2026/7/' + i + '.webp';
+        // 从body读取配置的背景url
+        var configBgUrl = document.body.dataset.bgUrl || "";
+        var url;
+      if(configBgUrl){
+      url = configBgUrl;
+      }else{
+  // 回退原有随机逻辑
+  url = '/images/bg.jpg';
+}
+
+      var loader = document.getElementById('site-bg-loader');
+      var attach = isMobile ? 'scroll' : 'fixed';
+
+      function paintBg() {
+        el.style.backgroundImage =
+          'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
+          'linear-gradient(rgba(250,248,245,0.45), rgba(250,248,245,0.45)),' +
+          'url(' + url + ')';
+        el.style.backgroundSize = '24px 24px, cover, cover';
+        el.style.backgroundPosition = '0 0, center, center';
+        el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
+        el.style.backgroundAttachment = attach + ', ' + attach + ', ' + attach;
+        el.classList.add('is-ready');
+        if (loader) loader.classList.remove('is-on');
+      }
+
+      // Already painted this URL → no loader flash
+      if (el.dataset.bgUrl === url && el.classList.contains('is-ready')) {
+        if (loader) loader.classList.remove('is-on');
+        return;
+      }
+
+      el.classList.remove('is-ready');
+      if (loader) loader.classList.add('is-on');
+
+      var bgPromise = new Promise(function (resolve) {
+        var img = new Image();
+        img.onload = function () {
+          el.dataset.bgUrl = url;
+          paintBg();
+          resolve();
+        };
+        img.onerror = function () {
+          el.style.backgroundImage =
+            'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
+            'linear-gradient(rgba(250,248,245,0.55), rgba(250,248,245,0.55))';
+          el.style.backgroundSize = '24px 24px, cover';
+          el.style.backgroundPosition = '0 0, center';
+          el.style.backgroundRepeat = 'repeat, no-repeat';
+          el.style.backgroundAttachment = attach + ', ' + attach;
+          el.classList.add('is-ready');
+          if (loader) loader.classList.remove('is-on');
+          resolve();
+        };
+        img.src = url;
+        if (img.complete) {
+          el.dataset.bgUrl = url;
+          paintBg();
+          resolve();
+        }
+      });
+      if (typeof window.__xuhomeTrackResource === 'function') {
+        window.__xuhomeTrackResource(bgPromise);
+      } else {
+        window.__xuhomePendingRes = window.__xuhomePendingRes || [];
+        window.__xuhomePendingRes.push(bgPromise);
+      }
+    }
+
+    // Send page view beacon manually on every navigation
+    // (beat.js loads once in <head>; its pushState hook may not fire
+    //  reliably with Astro View Transitions, so we send directly)
+    function trackPage() {
+      var url = __pageTrackApi + '?p=' + encodeURIComponent(location.pathname) + location.hash;
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url);
+      } else {
+        new Image().src = url;
+      }
+    }
+
+    function onPage() {
+      applySiteBg();
+      trackPage();
+    }
+
+    applySiteBg();
+    if (!window.__xuhomeBgBeatInited) {
+      window.__xuhomeBgBeatInited = true;
+      document.addEventListener('astro:after-swap', applySiteBg);
+      document.addEventListener('astro:page-load', onPage);
+    }
+  })();
+</script>
+<script is:inline>
+  (function () {
+    var totalRes = 0;
+    var doneRes = 0;
+    var hideTimer = null;
+
+    function setProgressUI(done, total) {
+      var top = document.getElementById('resource-progress');
+      var topBar = top && top.querySelector('i');
+      var topMeta = document.getElementById('resource-progress-meta');
+      var entryBar = document.getElementById('site-bg-loader-bar');
+      var entryMeta = document.getElementById('site-bg-loader-meta');
+      // never show empty 0/0
+      if (!total || total <= 0) {
+        if (top) top.classList.remove('is-on');
+        if (topBar) topBar.style.width = '0%';
+        if (topMeta) { topMeta.hidden = true; topMeta.textContent = ''; }
+        if (entryBar) entryBar.style.width = '0%';
+        if (entryMeta) { entryMeta.hidden = true; entryMeta.textContent = ''; }
+        return;
+      }
+      var pct = Math.min(100, Math.round((done / total) * 100));
+      var label = done + ' / ' + total + ' · ' + pct + '%';
+      if (topBar) topBar.style.width = pct + '%';
+      if (entryBar) entryBar.style.width = pct + '%';
+      if (topMeta) { topMeta.hidden = false; topMeta.textContent = label; }
+      if (entryMeta) { entryMeta.hidden = false; entryMeta.textContent = label; }
+      if (top) {
+        if (done < total) {
+          top.classList.add('is-on');
+        } else {
+          // snap to 100% then hide
+          if (topBar) topBar.style.width = '100%';
+          if (entryBar) entryBar.style.width = '100%';
+          if (topMeta) topMeta.textContent = total + ' / ' + total + ' · 100%';
+          if (entryMeta) entryMeta.textContent = total + ' / ' + total + ' · 100%';
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            if (top) top.classList.remove('is-on');
+            if (topMeta) topMeta.hidden = true;
+            if (entryMeta) entryMeta.hidden = true;
+          }, 320);
+        }
+      }
+    }
+
+    function bumpDone() {
+      doneRes = Math.min(totalRes, doneRes + 1);
+      setProgressUI(doneRes, totalRes);
+    }
+
+    function trackResource(promiseLike) {
+      totalRes += 1;
+      setProgressUI(doneRes, totalRes);
+      Promise.resolve(promiseLike).then(bumpDone, bumpDone);
+    }
+
+    window.__xuhomeTrackResource = trackResource;
+    if (window.__xuhomePendingRes && window.__xuhomePendingRes.length) {
+      var pending = window.__xuhomePendingRes.slice();
+      window.__xuhomePendingRes = [];
+      for (var pi = 0; pi < pending.length; pi++) trackResource(pending[pi]);
+    }
+
+    document.addEventListener('astro:page-load', function () {
+      totalRes = 0;
+      doneRes = 0;
+      setProgressUI(0, 0);
+    });
+
+    function boot() {
+      scan(document);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+    document.addEventListener('astro:page-load', function () {
+      totalRes = 0;
+      doneRes = 0;
+      setProgressUI(0, 0);
+      scan(document);
+    });
+  })();
+</script>
+
+    {/* Floating Back To Top button */}
+    <button
+      id="back-to-top-btn"
+      class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 opacity-0 pointer-events-none"
+      aria-label="回到顶部"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+  </body>
+</html>
+
+<script is:inline data-astro-rerun>
+  function setupGlobalScrollBar(){
+    const indicator = document.getElementById('scroll-bar-indicator');
+    if (!indicator || window.__scrollBarSetup) return;
+    window.__scrollBarSetup = true;
+    window.addEventListener('scroll', () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const percentage = totalHeight > 0 ? (window.pageYOffset / totalHeight) * 100 : 0;
+      indicator.style.width = percentage + '%';
+    }, { passive: true });
+  }
+
+  function setupBackToTop() {
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    if (!backToTopBtn) return;
+
+    // Scroll listener: only once (window persists across view transitions)
+    if (!window.__backToTopScrollSetup) {
+      window.__backToTopScrollSetup = true;
+      window.addEventListener('scroll', () => {
+        const btn = document.getElementById('back-to-top-btn');
+        if (!btn) return;
+        if (window.scrollY > 300) {
+          btn.classList.remove('opacity-0', 'pointer-events-none');
+          btn.classList.add('opacity-100');
+        } else {
+          btn.classList.add('opacity-0', 'pointer-events-none');
+          btn.classList.remove('opacity-100');
+        }
+      }, { passive: true });
+    }
+
+    // Click listener: only once (button is in layout body, persists)
+    if (!window.__backToTopClickSetup) {
+      window.__backToTopClickSetup = true;
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  }
+
+  // Initial run
+  setupGlobalScrollBar();
+  setupBackToTop();
+  
+  // Page navigation loader — tracks real resource loading
+  let navLoaderTimer = null;
+  let bottomLoaderTimer = null;
+  const navLoader = document.getElementById('nav-loader');
+  const navLoaderBar = navLoader?.querySelector('div');
+  const bottomLoader = document.getElementById('bottom-loader');
+  const bottomLoaderBar = bottomLoader?.querySelector('div');
+
+  let loaderActive = false;
+
+  function setProgress(pct) {
+    const clamped = Math.max(0, Math.min(100, pct));
+    if (navLoaderBar) navLoaderBar.style.width = clamped + '%';
+    if (bottomLoaderBar) bottomLoaderBar.style.width = clamped + '%';
+  }
+
+  function startNavLoader() {
+    if (navLoader && navLoaderBar) {
+      clearTimeout(navLoaderTimer);
+      navLoader.classList.remove('hidden');
+      navLoaderBar.style.transition = 'width 0.3s ease-out';
+      navLoaderBar.style.width = '3%';
+    }
+
+    if (bottomLoader && bottomLoaderBar) {
+      clearTimeout(bottomLoaderTimer);
+      bottomLoader.style.transform = 'translateY(0)';
+      bottomLoaderBar.style.width = '3%';
+      bottomLoaderBar.style.transition = 'width 0.3s ease-out';
+    }
+  }
+
+  function completeNavLoader() {
+    loaderActive = false;
+    clearTimeout(window.__loaderFallbackTimer);
+    clearInterval(window.__loaderFallbackInterval);
+
+    requestAnimationFrame(() => {
+      if (navLoaderBar) { navLoaderBar.style.width = '100%'; navLoaderBar.style.transition = 'width 0.15s ease-out'; }
+      if (bottomLoaderBar) { bottomLoaderBar.style.width = '100%'; bottomLoaderBar.style.transition = 'width 0.15s ease-out'; }
+
+      if (navLoader) {
+        clearTimeout(navLoaderTimer);
+        navLoaderTimer = setTimeout(() => {
+          navLoader.classList.add('hidden');
+          if (navLoaderBar) navLoaderBar.style.width = '0%';
+        }, 300);
+      }
+
+      if (bottomLoader) {
+        clearTimeout(bottomLoaderTimer);
+        bottomLoaderTimer = setTimeout(() => {
+          bottomLoader.style.transform = 'translateY(100%)';
+          setTimeout(() => {
+            bottomLoaderBar.style.width = '0%';
+          }, 300);
+        }, 250);
+      }
+    });
+  }
+
+  if (!window._layoutListenersInited) {
+    document.addEventListener('astro:before-preparation', startNavLoader);
+    document.addEventListener('astro:error', completeNavLoader);
+    document.addEventListener('astro:page-load', () => {
+      completeNavLoader();
+      setupGlobalScrollBar();
+      setupBackToTop();
+    });
+    window._layoutListenersInited = true;
+  }
+}
+</script>

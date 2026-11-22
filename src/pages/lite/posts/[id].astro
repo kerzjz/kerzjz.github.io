@@ -1,0 +1,62 @@
+---
+/**
+ * /lite/posts/[id]/ —— 降级版文章页：最简单的 HTML
+ * 只渲染 Markdown 正文 + 上一篇/下一篇，无目录、无评论、无分享、无灯箱、无阅读进度。
+ */
+import Lite from '../../../layouts/Lite.astro';
+import { getProcessedPosts } from '../../../utils/postsFetcher';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getProcessedPosts();
+  return posts.map((post, index) => {
+    const sorted = posts;
+    return {
+      params: { id: post.slug },
+      props: {
+        post,
+        index,
+        sorted,
+      },
+    };
+  });
+}
+
+const { post, index, sorted } = Astro.props;
+
+const rawPosts = await getCollection('posts');
+const entry = rawPosts.find((p: any) => (p.slug || p.id) === post.slug);
+if (!entry) {
+  return Astro.redirect('/lite/');
+}
+const { Content } = await render(entry);
+
+// sorted 按日期倒序，index-1 为更新的一篇，index+1 为更早的一篇
+const newer = index > 0 ? sorted[index - 1] : null;
+const older = index < sorted.length - 1 ? sorted[index + 1] : null;
+
+const liteUrl = (slug: string) => encodeURI(`/lite/posts/${slug}/`);
+---
+<Lite title={`${post.title} · 精简版`} description={post.description}>
+  <h1>{post.title}</h1>
+
+  <p class="meta">
+    {post.date}
+    {post.category ? ` · ${post.category}` : ''}
+    {post.tags && post.tags.length > 0 ? ` · ${post.tags.join(' / ')}` : ''}
+  </p>
+
+  {post.img ? <img src={post.img} alt={post.title} /> : null}
+
+  <hr />
+
+  <article class="post-body">
+    <Content />
+  </article>
+
+  <nav class="pager">
+    {newer ? <a href={liteUrl(newer.slug)}>上一篇：{newer.title}</a> : null}
+    {older ? <a href={liteUrl(older.slug)}>下一篇：{older.title}</a> : null}
+    <a href="/lite/">返回目录</a>
+  </nav>
+</Lite>

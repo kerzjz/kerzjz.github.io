@@ -1,0 +1,72 @@
+---
+/**
+ * Lite.astro —— 降级版基础布局
+ *
+ * 刻意不 import Layout.astro：不引 Tailwind、不引 React/Svelte 岛、不引 ClientRouter、
+ * 不请求任何外部字体与背景图，产出的是零脚本、零外链的裸 HTML。
+ * 这样 IE11 / Android 4.x / Opera Mini / 老 Safari 都能直接读到内容。
+ */
+import { getProcessedPosts } from '../utils/postsFetcher';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '' } = Astro.props;
+const allPosts = await getProcessedPosts();
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/* 降级站不参与收录，避免和正式站重复内容 */}
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <style is:inline>
+      html {
+        background: #fff;
+        color: #1a1a1a;
+        font-family: -apple-system, "Segoe UI", "Helvetica Neue", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
+        -webkit-text-size-adjust: 100%;
+      }
+      body { max-width: 40rem; margin: 0 auto; padding: 14px; word-wrap: break-word; }
+      a { color: #0284c7; }
+      a:visited { color: #6b46c1; }
+      h1 { font-size: 1.5rem; line-height: 1.35; margin: 1em 0 .5em; }
+      h2 { font-size: 1.25rem; margin: 1.2em 0 .5em; }
+      h3 { font-size: 1.1rem; margin: 1.2em 0 .4em; }
+      p, ul, ol { margin: .8em 0; }
+      ul.posts { list-style: none; margin: 0; padding: 0; }
+      ul.posts > li { padding: .7em 0; border-bottom: 1px solid #e5e5e5; }
+      .meta { color: #666; font-size: .85em; }
+      .desc { color: #444; font-size: .95em; margin: .3em 0 0; }
+      .notice { background: #f5f9fc; border: 1px solid #cfe3f2; padding: .8em 1em; font-size: .9em; }
+      .cat { display: inline-block; border: 1px solid #d0d0d0; padding: 0 .4em; font-size: .85em; color: #555; }
+      hr { border: 0; border-top: 1px solid #ddd; margin: 1.5em 0; }
+      img { max-width: 100%; height: auto; }
+      pre { overflow: auto; padding: .6em; background: #f6f8fa; border: 1px solid #ddd; font-size: .85em; }
+      code { font-family: Menlo, Consolas, monospace; }
+      blockquote { margin: .8em 0; padding: .2em .9em; border-left: 3px solid #ccc; color: #555; }
+      table { border-collapse: collapse; max-width: 100%; overflow: auto; display: block; }
+      th, td { border: 1px solid #ccc; padding: .3em .6em; }
+      .admonition { border: 1px solid #ccc; padding: .6em .9em; margin: 1em 0; }
+      nav.pager { margin: 1.5em 0; }
+      nav.pager a { display: inline-block; margin-right: 1em; }
+    </style>
+  </head>
+  <body>
+    <slot />
+    <hr />
+    <p class="meta">
+      这是本站的精简版（纯 HTML，无脚本、无样式框架）。
+      <a href="/?force=modern" onclick="try{window.sessionStorage&&sessionStorage.setItem('xu-lite-off','1')}catch(e){}">返回完整站点</a>
+      · 全部 <a href="/lite/">文章列表（{allPosts.length} 篇）</a>
+      本兼容页面没有评论等部分交互功能，主站《法律声明》中涉及本页不存在功能的相关规则不适用于本页；版权、免责等其他规则以主站为准，页面内容仅供参考，冲突以主站为准。
+    </p>
+  </body>
+</html>

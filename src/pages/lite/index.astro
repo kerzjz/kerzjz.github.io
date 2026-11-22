@@ -1,0 +1,60 @@
+---
+/**
+ * /lite/ —— 降级版首页：列出全部文章
+ * 纯静态 SSG 预渲染，产物里没有任何 <script>，满足 CLAUDE.md 的纯静态约束。
+ */
+import Lite from '../../layouts/Lite.astro';
+import { getProcessedPosts } from '../../utils/postsFetcher';
+import { siteConfig } from '../../config/site';
+
+const allPosts = await getProcessedPosts();
+
+// 按年分组，方便老设备上长列表滚动定位
+const byYear: { year: string; items: typeof allPosts }[] = [];
+allPosts.forEach((post) => {
+  const year = (post.date || '').slice(0, 4) || '未归档';
+  const last = byYear[byYear.length - 1];
+  if (last && last.year === year) {
+    last.items.push(post);
+  } else {
+    byYear.push({ year, items: [post] });
+  }
+});
+
+const liteTitle = `${siteConfig.title} · 精简版`;
+---
+<Lite title={liteTitle} description={`${siteConfig.title} 文章列表（精简版）`}>
+  <h1>{siteConfig.title} — 精简版</h1>
+
+  <p class="notice">
+    你的浏览器版本较旧，本站已自动切换到精简版页面：纯 HTML 文本，不含脚本与样式框架，
+    功能有限但可以正常阅读全部文章。
+  </p>
+
+  <h2>全部文章（共 {allPosts.length} 篇）</h2>
+
+  {allPosts.length === 0 && <p>暂无文章。</p>}
+
+  {byYear.map((group) => (
+    <div>
+      <h3>{group.year} 年（{group.items.length} 篇）</h3>
+      <ul class="posts">
+        {group.items.map((post) => (
+          <li>
+            <a href={encodeURI(`/lite/posts/${post.slug}/`)}>{post.title}</a>
+            <div class="meta">
+              {post.date}
+              {post.category ? ` · ${post.category}` : ''}
+            </div>
+            {post.description ? <p class="desc">{post.description}</p> : null}
+            {post.tags && post.tags.length > 0 ? (
+              <p>
+                {post.tags.map((tag) => <span class="cat">{tag}</span>)}
+              </p>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</Lite>

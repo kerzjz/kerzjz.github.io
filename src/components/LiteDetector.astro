@@ -1,0 +1,90 @@
+---
+/**
+ * LiteDetector —— 旧设备特性检测 + 降级跳转（全站唯一降级入口）
+ *
+ * 替代原先写在 Layout.astro 里的降级脚本。原实现有 4 个致命问题：
+ *   1. `location.href = '{FALLBACK_URL}'` 写在 `<script is:inline>` 内部。
+ *      Astro 的 is:inline 是「原样输出、不做表达式插值」，因此产物里真的就是字面量
+ *      `'{FALLBACK_URL}'`，浏览器跳去一个不存在的主机 —— 降级等于把人丢进出错页。
+ *   2. 降级目标是站外 GitHub Pages，站外资源一挂整个站的降级全废，且没有回路保护，
+ *      若目标站也用同一套 Layout 会形成跨站死循环。
+ *   3. 检测项（Promise / fetch / IntersectionObserver / grid）没有覆盖真正致命的一项：
+ *      Astro 产出的 JS 全是 `<script type="module">`，不支持 ESM 的浏览器一行都不执行。
+ *   4. `<noscript>` 里的 meta refresh 同样写了 `{FALLBACK_URL}` 字面量。
+ *
+ * 现方案：降级页与正式站同源，路径可映射（/posts/x → /lite/posts/x/），
+ * 带死循环保护与用户主动退出开关，脚本严格 ES5。
+ *
+ * 放置要求：必须是 <head> 里第一个执行的脚本，早于任何使用 const / 箭头函数的内联脚本
+ * —— 老浏览器解析到 ES6 语法会直接 SyntaxError，导致其后的脚本全部不执行。
+ */
+const liteBase = '/lite/';
+---
+<script is:inline>
+(function () {
+  try {
+    var LITE = '/lite/';
+    var OFF_KEY = 'xu-lite-off';
+    var path = location.pathname || '/';
+    if (path === '/lite' || path.indexOf(LITE) === 0) return;
+
+    var qs = (location.search || '').replace(/^\?/, '');
+    var force = false;
+    if (qs) {
+      var pairs = qs.split('&');
+      for (var i = 0; i < pairs.length; i++) {
+        var key = pairs[i].split('=')[0];
+        if (key === 'force') { force = true; break; }
+      }
+    }
+    if (force) {
+      try { if (window.sessionStorage) sessionStorage.setItem(OFF_KEY, '1'); } catch (e) {}
+      return;
+    }
+    try {
+      if (window.sessionStorage && sessionStorage.getItem(OFF_KEY) === '1') return;
+    } catch (e) {}
+
+    // ========== Chrome 版本 < 99 直接降级 ==========
+    var ua = navigator.userAgent || '';
+    var chromeMatch = ua.match(/Chrome\/(\d+)\./);
+    var isOldChrome = false;
+    if (chromeMatch) {
+      var ver = parseInt(chromeMatch[1], 10);
+      // 排除 Edge/Edg，只匹配原生 Chromium 及类似 fork
+      if (!/Edge|Edg/.test(ua) && ver < 99) {
+        isOldChrome = true;
+      }
+    }
+    if (isOldChrome) {
+      var slug = '';
+      if (path.indexOf('/posts/') === 0) {
+        slug = path.substring(7).replace(/\/+$/, '');
+      }
+      location.replace(slug ? LITE + 'posts/' + slug + '/' : LITE);
+      return;
+    }
+    // ======================================================
+
+    // 特性检测：ESM + CSS 变量
+    var hasEsm = false;
+    var hasCssVars = false;
+    try {
+      hasEsm = 'noModule' in HTMLScriptElement.prototype;
+    } catch (e) {}
+    try {
+      hasCssVars = !!(window.CSS && typeof CSS.supports === 'function' && CSS.supports('--x:0'));
+    } catch (e) {}
+    if (hasEsm && hasCssVars) return;
+
+    var slug = '';
+    if (path.indexOf('/posts/') === 0) {
+      slug = path.substring(7).replace(/\/+$/, '');
+    }
+    location.replace(slug ? LITE + 'posts/' + slug + '/' : LITE);
+  } catch (e) {}
+})();
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0;url=/lite/" />
+</noscript>

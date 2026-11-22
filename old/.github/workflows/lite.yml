@@ -1,0 +1,78 @@
+name: Notify Blog Deployment
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/content/posts/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Parse Markdown and Create Issues
+        run: |
+          TARGET_OWNER="kerzjz"
+          TARGET_REPO="kerzjz.github.io"
+          ARTICLES_DIR="src/content/posts"
+          TEMP_BODY_FILE=$(mktemp)
+
+          shopt -s nullglob
+          for file in "${ARTICLES_DIR}"/*.md; do
+            [ -f "$file" ] || continue
+            filename=$(basename "$file")
+
+            # 解析 frontmatter
+            title=$(sed -n '/^---$/,/^---$/p' "$file" | grep '^title:' | sed 's/^title:[[:space:]]*//;s/^"//;s/"$//;s/[[:space:]]*$//')
+            category=$(sed -n '/^---$/,/^---$/p' "$file" | grep '^category:' | sed 's/^category:[[:space:]]*//;s/^"//;s/"$//;s/[[:space:]]*$//')
+            tags_raw=$(sed -n '/^---$/,/^---$/p' "$file" | grep '^tags:' | sed 's/^tags:[[:space:]]*//')
+            # 将 ["tag1", "tag2"] 转为 tag1,tag2（逗号后无空格，gh 才能正确拆分）
+            tags=$(echo "$tags_raw" | sed 's/\[//;s/\]//;s/"//g;s/,/,/g;s/^[[:space:]]*//')
+            published=$(grep '^published:' "$file" | sed 's/^published:[[:space:]]*//')
+
+            # 提取正文（frontmatter 之后的内容）
+            body=$(awk '/^---$/{n++;next} n>=2' "$file")
+
+            # 用 printf 写入临时文件（避开 heredoc 缩进问题 + Shell 转义地狱）
+            printf '%s\n' \
+              "## 文章元数据" \
+              "" \
+              "- **发布时间**：${published}" \
+              "- **分类**：${category}" \
+              "- **标签**：${tags}" \
+              "" \
+              "---" \
+              "" \
+              "## 正文" \
+              "" \
+              "${body}" \
+              > "${TEMP_BODY_FILE}"
+
+            # 构建 labels（category + tags）
+            labels="${category}"
+            if [ -n "$tags" ]; then
+              labels="${labels},${tags}"
+            fi
+
+            # 调用 GitHub API 创建 Issue
+            gh issue create \
+              --repo "${TARGET_OWNER}/${TARGET_REPO}" \
+              --title "${title}" \
+              --body-file "${TEMP_BODY_FILE}" \
+              --label "${labels}" \
+              || echo "⚠️ 创建 Issue 失败: ${filename}"
+
+            echo "✅ 已提交 Issue: ${title}"
+          done
+          shopt -u nullglob
+          rm -f "${TEMP_BODY_FILE}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
