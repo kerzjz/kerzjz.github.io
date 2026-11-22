@@ -12,9 +12,9 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     env:
-      ISSUE_NUMBER: 2
+      ISSUE_NUMBER: 1
       TARGET_OWNER: kerzjz
-      TARGET_REPO: newblog
+      TARGET_REPO: kerzjz.github.io
       POST_BASE_URL: https://kerzjz.qzz.io/posts/
     steps:
       - name: Checkout
