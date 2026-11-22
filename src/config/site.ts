@@ -40,7 +40,7 @@ export const siteConfig = {
     qq: "3869843633",
     /** QQ群链接（欢迎提示中使用） */
         /** 订阅链接（欢迎提示中的"订阅"按钮，指向 GitHub Issues 等） */
-    subscribe: "https://github.com/kerzjz/newblog/issues",
+    subscribe: "https://github.com/kerzjz/kerzjz.github.io/issues",
   },
 
 
@@ -169,9 +169,9 @@ export const footerConfig = {
   /** 页脚开源仓库显示名 */
   tplDisplayName: "IMUPXUU/XUHOME",
   /** 页脚开源仓库链接 */
-  repoUrl: "https://github.com/kerzjz/newblog",
+  repoUrl: "https://github.com/kerzjz/kerzjz.github.io",
   /** 页脚开源仓库显示名 */
-  repoDisplayName: "KERZJZ/NEWBLOG",
+  repoDisplayName: "kerzjz/kerzjz.github.io",
 };
 
 /**
@@ -286,7 +286,7 @@ export const contentConfig = {
  */
 export const commentsConfig = {
   /** Giscus 仓库名称（格式：owner/repo） */
-  repo: 'kerzjz/newblog',
+  repo: 'kerzjz/kerzjz.github.io',
   /** Giscus 仓库 ID */
   repoId: 'R_kgDOToBa3A',
   /** Giscus 讨论分类 */
@@ -300,7 +300,7 @@ export const commentsConfig = {
  */
 export const friendsApplyConfig = {
   /** GitHub Issue 友链申请模板 URL */
-  issueTemplateUrl: 'https://github.com/kerzjz/newblog/issues/new?template=friend-request.yml',
+  issueTemplateUrl: 'https://github.com/kerzjz/kerzjz.github.io/issues/new?template=friend-request.yml',
 };
 
 /**
