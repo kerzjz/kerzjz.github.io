@@ -1,6 +1,6 @@
 ---
 title: "法律声明"
-published: 2026-09-06 10:16
+published: 2026-11-22 11:58
 description: ""
 tags: []
 category: ""
@@ -10,7 +10,7 @@ category: ""
 
 ## 隐私政策
 
-最后更新日期：2026‑09‑26
+最后更新日期：2026‑11-22
 
 Ker ZJZ（下称“我们”）尊重您的个人隐私。本隐私政策说明了您访问 `kerzjz.qzz.io`（以下简称“本站”）时，相关信息的处理规则。本隐私政策为信息公示文件，仅用于告知访客本站以及接入第三方服务的数据处理方式。单纯浏览网站的行为，不视作您已同意本站处理您的个人信息。您可以自行通过浏览器管理、拒绝本地存储与 Cookie；当您主动使用评论、订阅等功能提交个人信息时，即视为您已同意相关信息处理。
 
@@ -33,13 +33,13 @@ Ker ZJZ（下称“我们”）尊重您的个人隐私。本隐私政策说明�
 本站运行依赖以下第三方服务商，服务商有可能处理访客相关数据：
 
 1. **GitHub（源码存储）与 Giscus**
-本站源代码存放于 GitHub，网页托管、CDN 加速、安全防护均由 Cloudflare Pages 提供；评论功能由 Giscus 提供，评论数据保存在 GitHub Discussions。评论登录采用 GitHub OAuth 授权，话题邮件推送服务由 GitHub 提供。GitHub 公司总部位于美国加利福尼亚州，可能处理您的相关数据。
+本站源代码存放于 GitHub，网页托管、CDN 加速亦由 GitHub Pages 提供；评论功能由 Giscus 提供，评论数据保存在 GitHub Discussions。评论登录采用 GitHub OAuth 授权，话题邮件推送服务由 GitHub 提供。GitHub 公司总部位于美国加利福尼亚州，可能处理您的相关数据。
 
 详情请查阅 GitHub 隐私政策：[https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement)
 
-2. **Cloudflare（托管、CDN、安全防护与匿名流量分析）**
+2. **Cloudflare（DNS）**
 
-本站使用 Cloudflare 提供网页托管、反向代理、内容加速、人机防护以及匿名网页流量统计服务。在中转流量过程中，Cloudflare 出于安全以及数据分析目的可能处理您的 IP 地址。Cloudflare 总部位于美国加利福尼亚州。
+本站使用 Cloudflare 提供 DNS 服务。在中转流量过程中，Cloudflare 出于安全以及数据分析目的可能处理您的 IP 地址。Cloudflare 总部位于美国加利福尼亚州。
 
 Cloudflare 隐私政策：[https://www.cloudflare.com/privacypolicy/](https://www.cloudflare.com/privacypolicy/)
 
@@ -87,8 +87,7 @@ Microsoft Clarity 隐私政策：[https://privacy.microsoft.com/zh-cn/privacysta
 
 | 接收方              | 所在地 | 处理目的                 | 数据类型                   | 隐私政策                                                                                           |
 | ---------------- | --- | -------------------- | ---------------------- | ---------------------------------------------------------------------------------------------- |
-| GitHub, Inc.     | 美国  | 源码存储、评论数据托管、OAuth 登录 | GitHub 用户名、头像、评论内容     | [链接](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
-| Cloudflare, Inc. | 美国  | 网页托管、CDN、安全防护、匿名流量分析 | 匿名访问数据、设备类型、浏览器型号、大致地区 | [链接](https://www.cloudflare.com/privacypolicy/)                                                |
+| GitHub, Inc.     | 美国  | 源码存储、网页托管、评论数据托管、OAuth 登录 | GitHub 用户名、头像、评论内容     | [链接](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) |
 | Giscus.app       | 美国  | 评论组件嵌入               | 本地站点存储数据               | [链接](https://github.com/giscus/giscus/blob/main/PRIVACY-POLICY.md)                             |
 | Umami-Cloud      | 美国  | 匿名访问统计               | 匿名浏览数据                 | [链接](https://umami.is/privacy)                                                          | 
 | Microsoft Clarity       | 美国  | 用户行为分析、会话录屏、热力图               | 匿名会话行为、页面 URL、设备、操作系统、浏览器类型               | [链接](https://privacy.microsoft.com/zh-cn/privacystatement)                             |
@@ -106,7 +105,7 @@ Microsoft Clarity 隐私政策：[https://privacy.microsoft.com/zh-cn/privacysta
 
 ## 服务条款
 
-最后更新日期：2026‑09‑06
+最后更新日期：2026‑11-22
 
 欢迎访问 `kerzjz.qzz.io`，在浏览、使用本站全部内容与评论功能前，请您仔细阅读本服务条款。访问本站即代表您同意遵守以下全部约定；若您不认可条款内容，请立即停止访问本站。
 
@@ -124,7 +123,7 @@ Microsoft Clarity 隐私政策：[https://privacy.microsoft.com/zh-cn/privacysta
 
 ### 4、网站可用性
 
-本站依托 GitHub（源码存储）、Cloudflare Pages（网页托管）第三方服务运行，我们无法保证网站 100% 永久不间断可用。因服务商故障、网络问题、代码出现错误造成网站暂时无法访问，本站不承担赔偿责任；但因本站故意或重大过失导致的除外。
+本站依托 GitHub（源码存储和网页托管）、Cloudflare（DNS 解析）第三方服务运行，我们无法保证网站 100% 永久不间断可用。因服务商故障、网络问题、代码出现错误造成网站暂时无法访问，本站不承担赔偿责任；但因本站故意或重大过失导致的除外。
 
 ### 5、条款修改
 
