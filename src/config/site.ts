@@ -124,7 +124,6 @@ export const navConfig: {
 } = {
   /** 桌面端导航栏主项 */
   desktop: [
-    { name: "首页", href: "/", iconKey:"home", breakpoint: "", activeMatch: /^(\/|\/page\/|\/posts\/|\/category\/|\/tag\/)/ },
     { name: "关于", href: "/about", iconKey:"about", breakpoint: "", activeMatch: /^$/ },
     { name: "音乐", href: "/music", iconKey:"music", activeMatch: /^$/ },    
   ],
